@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,11 @@ using Twitter.DAL.Configurations;
 
 namespace Twitter.DAL.Contexts
 {
-    public class TwitterContext : DbContext
+    public class TwitterContext : IdentityDbContext<AppUser>
     {
         public TwitterContext(DbContextOptions options) : base(options) { }
         public DbSet<Topic> Topics { get; set; }
+        public DbSet<AppUser> Users {  get; set; }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entries = ChangeTracker.Entries<BaseEntity>();
