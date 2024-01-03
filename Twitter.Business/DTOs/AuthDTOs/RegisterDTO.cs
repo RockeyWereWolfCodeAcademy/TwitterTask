@@ -11,11 +11,10 @@ namespace Twitter.Business.DTOs.AuthDTOs
     {
         public string Name { get; set; }
         public string Surname { get; set; }
-        public string Username { get; set; }
+        public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public DateOnly BirthDay { get; set; }
-        public DateOnly RegistrationDate { get; set; }
+        public DateTime BirthDay { get; set; }
     }
 
     public class RegisterDTOValidator : AbstractValidator<RegisterDTO>
@@ -30,10 +29,29 @@ namespace Twitter.Business.DTOs.AuthDTOs
                 .NotEmpty()
                 .MinimumLength(2)
                 .MaximumLength(64);
-            RuleFor(x => x.Username)
+            RuleFor(x => x.UserName)
                 .NotEmpty()
                 .MinimumLength(2)
                 .MaximumLength(16);
-        }
-    }
+            RuleFor(x => x.Email)
+                .NotEmpty()
+                .EmailAddress();
+            RuleFor(x => x.BirthDay)
+                .NotEmpty()
+                .Must(BeAValidAge);
+
+		}
+		protected bool BeAValidAge(DateTime date)
+		{
+			int currentYear = DateTime.Now.Year;
+			int dobYear = date.Year;
+
+			if (dobYear <= (currentYear - 13))
+			{
+				return true;
+			}
+
+			return false;
+		}
+	}
 }

@@ -8,6 +8,6 @@ namespace Twitter.Business.ExternalServices.Interfaces
 {
     public interface IEmailService
     {
-        public Task SendEmail(string email);
+        public Task SendEmail(string toMail, string subject, string content, bool isHtml = true);
     }
 }
