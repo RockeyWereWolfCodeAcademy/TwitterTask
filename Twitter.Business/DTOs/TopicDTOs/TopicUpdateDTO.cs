@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace Twitter.Business.DTOs.TopicDTOs
 {
-    public class TopicCreateDTO
-    {
-        public string Name { get; set; }
-    }
+	public class TopicUpdateDTO
+	{
+		public string Name { get; set; }
+	}
 
-    public class TopicCreateDTOValidator : AbstractValidator<TopicCreateDTO>
-    {
-        public TopicCreateDTOValidator()
-        {
+	public class TopicUpdateDTOValidator : AbstractValidator<TopicUpdateDTO>
+	{
+		public TopicUpdateDTOValidator()
+		{
 			RuleFor(x => x.Name)
 				.NotEmpty()
 				.MinimumLength(2)
 				.MaximumLength(32);
 		}
-    }
+	}
 }

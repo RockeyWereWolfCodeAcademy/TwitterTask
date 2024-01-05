@@ -10,8 +10,10 @@ namespace Twitter.Business.Services.Interfaces
 {
     public interface ITopicService
     {
-        public IQueryable<TopicListDTO> GetAll();
-        public Task<TopicDetailDTO> GetByIdAsync(int? id);
+        public IEnumerable<TopicListDTO> GetAll();
+        public Task<TopicDetailDTO> GetByIdAsync(int id);
         public Task CreateAsync (TopicCreateDTO topic);
-    }
+		public Task DeleteAsync(int id);
+		public Task UpdateAsync(int id, TopicUpdateDTO topic);
+	}
 }

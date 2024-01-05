@@ -13,6 +13,7 @@ using Twitter.Business.Services.Interfaces;
 using FluentValidation.AspNetCore;
 using Twitter.Business.DTOs.AuthDTOs;
 using Twitter.Business.ExternalServices.Implements;
+using Twitter.Business.DTOs.TopicDTOs;
 
 namespace Twitter.Business
 {
@@ -21,19 +22,23 @@ namespace Twitter.Business
         public static IServiceCollection AddRepositories (this IServiceCollection services)
         {
             services.AddScoped<ITopicRepository, TopicRepository>();
-            return services;
+			services.AddScoped<IBlogFileRepository, BlogFileRepository>();
+			services.AddScoped<IBlogRepository, BlogRepository>();
+			return services;
         }
         public static IServiceCollection AddServices (this IServiceCollection services)
         {
             services.AddScoped<ITopicService, TopicService>();
-            services.AddScoped<IEmailService, EmailService>();
+		    services.AddScoped<IBlogFileService, BlogFileService>();
+			services.AddScoped<IBlogService, BlogService>();
+			services.AddScoped<IEmailService, EmailService>();
             return services;
         }
         public static IServiceCollection AddBusinessLayer (this IServiceCollection services)
         {
 			services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<RegisterDTOValidator>());
 			services.AddAutoMapper(typeof(UserMappingProfile).Assembly);
-            return services;
+			return services;
         }
     }
 }

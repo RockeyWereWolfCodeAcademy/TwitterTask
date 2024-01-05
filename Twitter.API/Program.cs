@@ -13,10 +13,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<TwitterContext>( options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MSSql"))
-).AddIdentity<AppUser, IdentityRole>( options => 
-   options.User.RequireUniqueEmail = true
+builder.Services.AddDbContext<TwitterContext>(options =>
+	options.UseSqlServer(builder.Configuration.GetConnectionString("MSSql"))
+).AddIdentity<AppUser, IdentityRole>(options =>
+	options.User.RequireUniqueEmail = true
 ).AddEntityFrameworkStores<TwitterContext>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 	.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>

@@ -17,6 +17,9 @@ namespace Twitter.DAL.Contexts
         public TwitterContext(DbContextOptions options) : base(options) { }
         public DbSet<Topic> Topics { get; set; }
         public DbSet<AppUser> Users {  get; set; }
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<Core.Entities.BlogFile> BlogFiles { get; set; }
+        public DbSet<BlogTopic> BlogsTopics { get; set; }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entries = ChangeTracker.Entries<BaseEntity>();
@@ -24,6 +27,17 @@ namespace Twitter.DAL.Contexts
             {
                 if(entry.State == EntityState.Added)
                     entry.Entity.CreatedAt = DateTime.Now;
+            }
+            var blogs = ChangeTracker.Entries<Blog>();
+            foreach (var blog in blogs)
+            {
+                if(blog.State == EntityState.Modified)
+                {
+                    blog.Entity.Updated = true;
+                    blog.Entity.UpdatedAt = DateTime.Now;
+                    blog.Entity.UpdatedCount++;
+                }
+
             }
             return base.SaveChangesAsync(cancellationToken);
         }

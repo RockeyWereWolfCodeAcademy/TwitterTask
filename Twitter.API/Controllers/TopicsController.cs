@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Twitter.Business.DTOs.TopicDTOs;
+using Twitter.Business.Exceptions.Common;
+using Twitter.Business.Exceptions.Topic;
 using Twitter.Business.Repositories.Interfaces;
 using Twitter.Business.Services.Interfaces;
 
@@ -20,11 +22,61 @@ namespace Twitter.API.Controllers
         {
             return Ok(_service.GetAll());
         }
-        [HttpPost]
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetById(int id)
+		{
+			try
+			{
+				return Ok(await _service.GetByIdAsync(id));
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+		[HttpPost]
         public async Task<IActionResult> Create(TopicCreateDTO topic)
         {
-            await _service.CreateAsync(topic);
-            return StatusCode(StatusCodes.Status201Created);
-        }
-    }
+			try
+			{
+				await _service.CreateAsync(topic);
+				return StatusCode(StatusCodes.Status201Created);
+			}
+			catch (TopicExistException ex)
+			{
+				return Conflict(ex.Message);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> Delete(int id)
+		{
+			try
+			{
+				await _service.DeleteAsync(id);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+			
+		}
+		[HttpPut("{id}")]
+		public async Task<IActionResult> Update(int id, TopicUpdateDTO dto)
+		{
+			try
+			{
+				await _service.UpdateAsync(id, dto);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+	}
 }

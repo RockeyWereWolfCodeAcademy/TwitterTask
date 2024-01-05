@@ -9,16 +9,15 @@ using Twitter.Core.Entities;
 
 namespace Twitter.DAL.Configurations
 {
-    public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
-    {
-        public void Configure(EntityTypeBuilder<AppUser> builder)
-        {
-			builder.Property(x => x.Name)
+	public class BlogConfiguraion : IEntityTypeConfiguration<Blog>
+	{
+		public void Configure(EntityTypeBuilder<Blog> builder)
+		{
+			builder.Property(t => t.Content)
 				.IsRequired()
-				.HasMaxLength(64);
-			builder.Property(x => x.Surname)
-				.IsRequired()
-				.HasMaxLength(64);
+				.HasMaxLength(2048);
+			builder.Property(t => t.Updated)
+				.HasDefaultValue(false);
 		}
-    }
+	}
 }

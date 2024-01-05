@@ -27,12 +27,27 @@ namespace Twitter.Business.Repositories.Implements
             await Table.AddAsync(entity);
         }
 
+		public void Delete(T data)
+		{
+			Table.Remove(data);
+		}
+
         public IQueryable<T> GetAll(bool notTracked = true)
             => notTracked ? Table.AsNoTracking() : Table;
 
-        public async Task SaveAsync()
+		public async Task<T> GetByIdAsync(int id, bool noTracking = true)
+		{
+			return noTracking ? await Table.AsNoTracking().SingleOrDefaultAsync(t => t.Id == id) : await Table.FindAsync(id);
+		}
+
+		public async Task<bool> IsExistAsync(Expression<Func<T, bool>> expression)
+		{
+			return await Table.AnyAsync(expression);
+		}
+
+		public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
         }
-    }
+	}
 }

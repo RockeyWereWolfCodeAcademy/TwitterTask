@@ -41,12 +41,12 @@ namespace Twitter.Business.DTOs.AuthDTOs
                 .Must(BeAValidAge);
 
 		}
-		protected bool BeAValidAge(DateTime date)
+		protected bool BeAValidAge(DateTime dateOfBirth)
 		{
 			int currentYear = DateTime.Now.Year;
-			int dobYear = date.Year;
+			int birthYear = dateOfBirth.Year;
 
-			if (dobYear <= (currentYear - 13))
+			if (birthYear <= (currentYear - 13))
 			{
 				return true;
 			}
