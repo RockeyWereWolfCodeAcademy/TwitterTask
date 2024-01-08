@@ -4,6 +4,9 @@ using Twitter.Business;
 using Twitter.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,14 +19,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TwitterContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("MSSql"))
 ).AddIdentity<AppUser, IdentityRole>(options =>
-	options.User.RequireUniqueEmail = true
-).AddEntityFrameworkStores<TwitterContext>();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-	.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+	options.User.RequireUniqueEmail = true;
+	options.SignIn.RequireConfirmedEmail = true;
+}).AddEntityFrameworkStores<TwitterContext>().AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+	.AddJwtBearer(options =>
 	{
-		options.SlidingExpiration = true;
-		options.ExpireTimeSpan = TimeSpan.FromDays(30);
-	});
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
 builder.Services.AddRepositories();
 builder.Services.AddServices();
 builder.Services.AddBusinessLayer();

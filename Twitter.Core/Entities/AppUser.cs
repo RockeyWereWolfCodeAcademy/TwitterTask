@@ -12,7 +12,7 @@ namespace Twitter.Core.Entities
         public string Name { get; set; }
         public string Surname { get; set; }
         public DateTime BirthDay { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
         public IEnumerable<Blog> Blogs { get; set; }
     }
 }
