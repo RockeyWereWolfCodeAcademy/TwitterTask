@@ -18,7 +18,7 @@ namespace Twitter.Business.ExternalServices.Implements
 		{
 			_configuration = configuration;
 		}
-		public async Task SendEmail(string toMail, string subject, string content, bool isHtml = true)
+		public void SendEmail(string toMail, string subject, string content, bool isHtml = true)
 		{
 			SmtpClient smtpClient = new SmtpClient(_configuration["Email:Host"], Convert.ToInt32(_configuration["Email:Port"]));
 			smtpClient.EnableSsl = true;
@@ -32,7 +32,9 @@ namespace Twitter.Business.ExternalServices.Implements
 			message.Subject = subject;
 			message.IsBodyHtml = isHtml;
 
-			smtpClient.SendAsync(message, null);
+            smtpClient.SendAsync(message, null);
 		}
+
+
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Twitter.Business.DTOs.BlogDTOs;
 using Twitter.Business.Services.Interfaces;
@@ -7,7 +8,8 @@ namespace Twitter.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class BlogsController : ControllerBase
+    [Authorize]
+    public class BlogsController : ControllerBase
 	{
 		readonly IBlogService _service;
 		public BlogsController(IBlogService service)

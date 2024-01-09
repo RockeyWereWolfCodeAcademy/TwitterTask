@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Twitter.Business.DTOs.TopicDTOs;
 using Twitter.Business.Exceptions.Common;
@@ -10,6 +11,7 @@ namespace Twitter.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TopicsController : ControllerBase
     {
         readonly ITopicService _service;

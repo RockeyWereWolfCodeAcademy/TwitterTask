@@ -32,6 +32,9 @@ namespace Twitter.Business
 		    services.AddScoped<IBlogFileService, BlogFileService>();
 			services.AddScoped<IBlogService, BlogService>();
 			services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITokenService, TokenService>();
             return services;
         }
         public static IServiceCollection AddBusinessLayer (this IServiceCollection services)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Twitter.Business.DTOs.BlogFileDTOs;
 using Twitter.Business.Services.Interfaces;
 
@@ -6,7 +7,9 @@ namespace Twitter.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class BlogFilesController : ControllerBase
+
+    [Authorize]
+    public class BlogFilesController : ControllerBase
 	{
 		readonly IBlogFileService _service;
 		public BlogFilesController(IBlogFileService service)

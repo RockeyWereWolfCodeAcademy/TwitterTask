@@ -22,28 +22,26 @@ namespace Twitter.API.Controllers
     {
         readonly IEmailService _emailService;
         readonly IMapper _mapper;
-		readonly SignInManager<AppUser> _signInManager;
-	    readonly UserManager<AppUser> _userManager;
 		readonly IConfiguration _config;
+        readonly IUserService _userService;
+        readonly IAuthService _authService;
 
 
-        public AuthController(IEmailService emailService, IMapper mapper, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IConfiguration config)
+        public AuthController(IEmailService emailService, IMapper mapper, IConfiguration config, IUserService userService, IAuthService authService)
         {
             _emailService = emailService;
             _mapper = mapper;
-            _signInManager = signInManager;
-            _userManager = userManager;
             _config = config;
+            _userService = userService;
+            _authService = authService;
         }
         [HttpGet]
 		[Route("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-                return new BadRequestObjectResult(new { Message = "Unexpected error" });
-            var result = await _userManager.ConfirmEmailAsync(user, token);
-            return new BadRequestObjectResult(result.Succeeded ? nameof(ConfirmEmail) : new { Message = "Unexpected error"});
+            var result = await _authService.ConfirmEmail(token, email);
+            var response = result == true ? nameof(ConfirmEmail) : "Unexpected error";
+            return new BadRequestObjectResult(response);
         }
 
         //reg
@@ -51,22 +49,11 @@ namespace Twitter.API.Controllers
 		[Route("Register")]
 		public async Task<IActionResult> Register(RegisterDTO dto)
         {
-			var user = _mapper.Map<AppUser>(dto);
-            var result = await _userManager.CreateAsync(user, dto.Password);
-			if (!result.Succeeded) 
-			{
-				var dictionary = new ModelStateDictionary();
-				foreach (IdentityError error in result.Errors)
-				{
-					dictionary.AddModelError(error.Code, error.Description);
-				}
-
-				return new BadRequestObjectResult(new { Message = "User Registration Failed", Errors = dictionary });
-			}
+            await _userService.CreateAsync(dto);
             
-            await _emailService.SendEmail(dto.Email, "Welcome", $"<h1>Welcome to our system {dto.UserName}!</h1>" +
-				$"<p>Now you need to confirm your account {await GenerateConfirmationLink(user)} </p>");
-			return Ok(new { Message = "User Reigstration Successful" });
+            _emailService.SendEmail(dto.Email, "Welcome", $"<h1>Welcome to our system {dto.UserName}!</h1>" +
+				$"<p>Now you need to confirm your account {await GenerateConfirmationLink(dto)} </p>");
+			return Ok(new { Message = "User Reigstration Successful, please check your email for confirmation link!" });
 		}
 
 		//log
@@ -74,47 +61,15 @@ namespace Twitter.API.Controllers
 		[Route("Login")]
 		public async Task<IActionResult> Login(LoginDTO dto)
 		{
-			var user = await _userManager.FindByEmailAsync(dto.UsernameOrEmail) ?? await _userManager.FindByNameAsync(dto.UsernameOrEmail);   /*await userManager.FindByNameAsync(credentials.Username);*/
-			if (user == null)
-			{
-				return new BadRequestObjectResult(new { Message = "Login failed. Check your credentials!" });
-			}
-
-			var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
-			if (result == PasswordVerificationResult.Failed)
-			{
-				return new BadRequestObjectResult(new { Message = "Login failed. Check your credentials!" });
-			}
-			if (!await _signInManager.CanSignInAsync(user))
-			{
-                return new BadRequestObjectResult(new { Message = "Login failed. Confirm your account!" });
-            }
-
-            var tokenString = GenerateJSONWebToken(user);
-
-			return Ok(new { Message = "User is logged in token: "+tokenString });
+			return Ok(await _authService.Login(dto));
 		}
 
-        private async Task<string> GenerateConfirmationLink(AppUser user)
+        private async Task<string> GenerateConfirmationLink(RegisterDTO dto)
         {
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var user = _mapper.Map<AppUser>(dto);
+            var token = await _authService.GetConfirmationToken(user);
             var confirmationLink = Url.Action(nameof(ConfirmEmail), "Auth", new { token, email = user.Email }, Request.Scheme);
             return confirmationLink;
-        }
-
-        private string GenerateJSONWebToken(AppUser user)
-        {
-            
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-              _config["Jwt:Issuer"],
-              null,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
