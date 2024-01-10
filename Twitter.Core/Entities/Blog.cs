@@ -8,7 +8,8 @@ namespace Twitter.Core.Entities
 {
 	public class Blog : BaseEntity
     { 
-        public string Author { get; set; }
+        public string AuthorId { get; set; }
+        public AppUser AppUser { get; set; }
         public string Content { get; set; }
         public bool Updated { get; set; }
         public DateTime UpdatedAt { get; set; }

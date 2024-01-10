@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Twitter.Business.DTOs.BlogDTOs;
 using Twitter.Business.Services.Interfaces;
+using Twitter.Core.Enums;
 
 namespace Twitter.API.Controllers
 {
@@ -35,13 +36,15 @@ namespace Twitter.API.Controllers
 		}
 		[HttpPost]
 		[Route("Create")]
-		public async Task<IActionResult> Create(BlogCreateDTO Blog)
+        [Authorize(Roles = nameof(Roles.Admin))]
+        public async Task<IActionResult> Create(BlogCreateDTO Blog)
 		{
 			await _service.CreateAsync(Blog);
 			return StatusCode(StatusCodes.Status201Created);
 		}
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> Delete(int id)
+        [Authorize(Roles = nameof(Roles.Admin))]
+        public async Task<IActionResult> Delete(int id)
 		{
 			try
 			{
@@ -54,7 +57,8 @@ namespace Twitter.API.Controllers
 			}
 		}
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Update(int id, BlogUpdateDTO dto)
+        [Authorize(Roles = nameof(Roles.Admin))]
+        public async Task<IActionResult> Update(int id, BlogUpdateDTO dto)
 		{
 			try
 			{

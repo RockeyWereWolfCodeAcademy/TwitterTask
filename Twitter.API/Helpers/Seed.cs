@@ -52,6 +52,7 @@ namespace Twitter.API.Helpers
                 Name = app.Configuration["Admin:Name"],
                 Surname = app.Configuration["Admin:Surname"],
                 Email = app.Configuration["Admin:Email"],
+                EmailConfirmed = true,
                 BirthDay = new DateTime(),
             };
             var result = await userManager.CreateAsync(user, app.Configuration["Admin:Password"]);
@@ -67,7 +68,16 @@ namespace Twitter.API.Helpers
                     throw new AppUserCreationFailedException(sb.ToString().TrimEnd());
                 }
             }
-            await userManager.AddToRoleAsync(user, nameof(Roles.Admin));
+            var roleResult = await userManager.AddToRoleAsync(user, nameof(Roles.Admin));
+            if (!roleResult.Succeeded)
+            {
+                StringBuilder sb = new();
+                foreach (var error in result.Errors)
+                {
+                    sb.Append(error.Description + " ");
+                }
+                throw new RoleAssignFailedException(sb.ToString().TrimEnd());
+            }
         }
     }
 }

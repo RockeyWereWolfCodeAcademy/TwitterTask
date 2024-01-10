@@ -6,6 +6,7 @@ using Twitter.Business.Exceptions.Common;
 using Twitter.Business.Exceptions.Topic;
 using Twitter.Business.Repositories.Interfaces;
 using Twitter.Business.Services.Interfaces;
+using Twitter.Core.Enums;
 
 namespace Twitter.API.Controllers
 {
@@ -37,6 +38,7 @@ namespace Twitter.API.Controllers
 			}
 		}
 		[HttpPost]
+        [Authorize(Roles = nameof(Roles.Admin))]
         public async Task<IActionResult> Create(TopicCreateDTO topic)
         {
 			try
@@ -54,7 +56,8 @@ namespace Twitter.API.Controllers
 			}
 		}
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> Delete(int id)
+        [Authorize(Roles = nameof(Roles.Admin))]
+        public async Task<IActionResult> Delete(int id)
 		{
 			try
 			{
@@ -68,7 +71,8 @@ namespace Twitter.API.Controllers
 			
 		}
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Update(int id, TopicUpdateDTO dto)
+        [Authorize(Roles = nameof(Roles.Admin))]
+        public async Task<IActionResult> Update(int id, TopicUpdateDTO dto)
 		{
 			try
 			{

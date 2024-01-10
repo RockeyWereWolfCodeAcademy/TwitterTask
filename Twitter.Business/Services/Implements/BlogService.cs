@@ -28,7 +28,7 @@ namespace Twitter.Business.Services.Implements
 			Blog blogToCreate = new Blog
 			{
 				Content = blog.Content,
-				Author = blog.Author,
+				AuthorId = blog.AuthorId,
 				BlogTopics = blog.TopicIds.Select(id => new BlogTopic {
 					TopicId = id,
 				}).ToList(),

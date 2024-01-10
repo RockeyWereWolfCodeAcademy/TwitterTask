@@ -13,11 +13,14 @@ namespace Twitter.DAL.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Blog> builder)
 		{
-			builder.Property(t => t.Content)
+			builder.Property(b => b.Content)
 				.IsRequired()
 				.HasMaxLength(2048);
-			builder.Property(t => t.Updated)
+			builder.Property(b => b.Updated)
 				.HasDefaultValue(false);
+			builder.HasOne(b => b.AppUser)
+				.WithMany(u => u.Blogs)
+				.HasForeignKey(b => b.AuthorId);
 		}
 	}
 }

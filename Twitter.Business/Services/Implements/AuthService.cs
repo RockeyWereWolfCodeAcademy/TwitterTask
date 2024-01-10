@@ -11,6 +11,7 @@ namespace Twitter.Business.Services.Implements
     {
         readonly UserManager<AppUser> _userManager;
         readonly SignInManager<AppUser> _signInManager;
+        readonly RoleManager<IdentityRole> _roleManager;
         readonly ITokenService _tokenService;
 
         public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService)
@@ -28,8 +29,12 @@ namespace Twitter.Business.Services.Implements
             var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
             if (result == PasswordVerificationResult.Failed) throw new LoginFailedException("Login failed. Check your credentials!");
             if (!await _signInManager.CanSignInAsync(user)) throw new LoginFailedException("Login failed. Account is not confirmed!");
-
-            return _tokenService.GenerateJWT(user);
+            string role = (await _userManager.GetRolesAsync(user))[0];
+            return _tokenService.GenerateJWT(new TokenParamsDTO
+            {
+                User = user,
+                Role = role
+            });
         }
 
         public async Task<bool> ConfirmEmail(string token, string email)

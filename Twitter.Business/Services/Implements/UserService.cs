@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Twitter.Business.DTOs.AuthDTOs;
 using Twitter.Business.Services.Interfaces;
 using Twitter.Core.Entities;
+using Twitter.Core.Enums;
+using Twitter.Business.Exceptions.Roles;
 
 namespace Twitter.Business.Services.Implements
 {
@@ -37,6 +39,16 @@ namespace Twitter.Business.Services.Implements
                     sb.Append(error.Code + error.Description + " ");
                 }
                 throw new Exception(sb.ToString().TrimEnd());
+            }
+            var roleResult = await _userManager.AddToRoleAsync(user, nameof(Roles.Member));
+            if (!roleResult.Succeeded)
+            {
+                StringBuilder sb = new();
+                foreach (var error in result.Errors)
+                {
+                    sb.Append(error.Description + " ");
+                }
+                throw new RoleAssignFailedException(sb.ToString().TrimEnd());
             }
         }
     }
