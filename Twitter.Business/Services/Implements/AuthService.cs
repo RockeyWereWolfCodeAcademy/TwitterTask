@@ -1,10 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Twitter.Business.DTOs.AuthDTOs;
 using Twitter.Business.Exceptions.Auth;
 using Twitter.Business.ExternalServices.Interfaces;
