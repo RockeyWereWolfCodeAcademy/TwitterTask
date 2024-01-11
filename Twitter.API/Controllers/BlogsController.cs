@@ -36,7 +36,6 @@ namespace Twitter.API.Controllers
 		}
 		[HttpPost]
 		[Route("Create")]
-        [Authorize(Roles = nameof(Roles.Admin))]
         public async Task<IActionResult> Create(BlogCreateDTO Blog)
 		{
 			await _service.CreateAsync(Blog);
@@ -49,6 +48,33 @@ namespace Twitter.API.Controllers
 			try
 			{
 				await _service.DeleteAsync(id);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+		[HttpPatch("{id}")]
+		public async Task<IActionResult> SoftDelete(int id)
+		{
+			try
+			{
+				await _service.SoftDelete(id);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+		[HttpPatch("reverse/{id}")]
+		[Authorize(Roles = nameof(Roles.Admin))]
+		public async Task<IActionResult> ReverseSoftDelete(int id)
+		{
+			try
+			{
+				await _service.ReverseSoftDelete(id);
 				return Ok();
 			}
 			catch (Exception ex)

@@ -16,8 +16,8 @@ namespace Twitter.Business.Profiles
 		{
 			CreateMap<BlogCreateDTO, Blog>();
 			CreateMap<BlogUpdateDTO, Blog>();
-			CreateMap<Blog, BlogListDTO>().ForMember(dto=> dto.Topics, opt=> opt.MapFrom(blog=> blog.BlogTopics.Select(t=> t.Topic).ToList()));
-			CreateMap<Blog, BlogDetailDTO>();
+			CreateMap<Blog, BlogListDTO>().ForMember(dto => dto.Author, opt => opt.MapFrom(blog => blog.AppUser));
+			CreateMap<Blog, BlogDetailDTO>().ForMember(dto => dto.Author, opt => opt.MapFrom(blog => blog.AppUser));
 		}
 	}
 }

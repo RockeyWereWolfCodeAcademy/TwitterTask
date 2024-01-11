@@ -1,18 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Security.Claims;
 using Twitter.Business.DTOs.AuthDTOs;
 using Twitter.Business.ExternalServices.Interfaces;
 using Twitter.Core.Entities;
-using System.IdentityModel.Tokens.Jwt;
 using Twitter.Business.Services.Interfaces;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace Twitter.API.Controllers
 {
@@ -22,16 +13,14 @@ namespace Twitter.API.Controllers
     {
         readonly IEmailService _emailService;
         readonly IMapper _mapper;
-		readonly IConfiguration _config;
         readonly IUserService _userService;
         readonly IAuthService _authService;
 
 
-        public AuthController(IEmailService emailService, IMapper mapper, IConfiguration config, IUserService userService, IAuthService authService)
+        public AuthController(IEmailService emailService, IMapper mapper, IUserService userService, IAuthService authService)
         {
             _emailService = emailService;
             _mapper = mapper;
-            _config = config;
             _userService = userService;
             _authService = authService;
         }

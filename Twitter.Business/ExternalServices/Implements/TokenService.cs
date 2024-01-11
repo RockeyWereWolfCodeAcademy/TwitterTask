@@ -27,6 +27,7 @@ namespace Twitter.Business.ExternalServices.Implements
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
             List<Claim> claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, dto.User.Id));
             claims.Add(new Claim(ClaimTypes.Name, dto.User.UserName));
             claims.Add(new Claim(ClaimTypes.GivenName, dto.User.Name + "_" + dto.User.Surname));
             claims.Add(new Claim(ClaimTypes.Role, dto.Role));
