@@ -17,7 +17,6 @@ namespace Twitter.Business.Repositories.Interfaces
 		Task<bool> IsExistAsync(Expression<Func<T, bool>> expression);
 		Task CreateAsync(T entity);
         void Delete(T entity);
-        //void SoftDelete(T entity);
         Task SaveAsync();
     }
 }

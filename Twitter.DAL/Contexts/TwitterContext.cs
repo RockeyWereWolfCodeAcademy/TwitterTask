@@ -18,8 +18,9 @@ namespace Twitter.DAL.Contexts
         public DbSet<Topic> Topics { get; set; }
         public DbSet<AppUser> Users {  get; set; }
         public DbSet<Blog> Blogs { get; set; }
-        public DbSet<Core.Entities.BlogFile> BlogFiles { get; set; }
+        public DbSet<BlogFile> BlogFiles { get; set; }
         public DbSet<BlogTopic> BlogsTopics { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entries = ChangeTracker.Entries<BaseEntity>();
