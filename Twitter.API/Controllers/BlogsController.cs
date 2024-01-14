@@ -9,7 +9,7 @@ namespace Twitter.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-    [Authorize]
+    //[Authorize]
     public class BlogsController : ControllerBase
 	{
 		readonly IBlogService _service;

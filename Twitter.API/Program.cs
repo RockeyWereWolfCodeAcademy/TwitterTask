@@ -11,6 +11,13 @@ var jwt = builder.Configuration.GetSection("Jwt").Get<Jwt>();
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(pol =>
+    {
+        pol.WithOrigins("http://127.0.0.1:5500").AllowAnyHeader().AllowAnyMethod();
+    });
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
@@ -63,6 +70,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseSeedData();
 app.UseAuthentication();
 app.UseAuthorization();

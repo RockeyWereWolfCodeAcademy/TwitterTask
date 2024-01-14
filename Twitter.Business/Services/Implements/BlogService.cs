@@ -29,8 +29,11 @@ namespace Twitter.Business.Services.Implements
 			_repo = repo;
 			_mapper = mapper;
 			_contextAccessor = contextAccessor;
-			_userId = _contextAccessor.HttpContext?.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-		}
+            if (_contextAccessor.HttpContext.User.Claims.Any())
+            {
+                _userId = _contextAccessor.HttpContext?.User?.Claims?.First(x => x.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new NullReferenceException();
+            }
+        }
 
 		public async Task CreateAsync(BlogCreateDTO blog)
 		{
