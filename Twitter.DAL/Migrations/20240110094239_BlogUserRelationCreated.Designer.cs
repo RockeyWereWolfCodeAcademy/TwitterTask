@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Twitter.DAL.Contexts;
 
@@ -11,9 +12,10 @@ using Twitter.DAL.Contexts;
 namespace Twitter.DAL.Migrations
 {
     [DbContext(typeof(TwitterContext))]
-    partial class TwitterContextModelSnapshot : ModelSnapshot
+    [Migration("20240110094239_BlogUserRelationCreated")]
+    partial class BlogUserRelationCreated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -336,46 +338,6 @@ namespace Twitter.DAL.Migrations
                     b.ToTable("BlogsTopics");
                 });
 
-            modelBuilder.Entity("Twitter.Core.Entities.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("BlogId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("ParentCommentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("BlogId");
-
-                    b.HasIndex("ParentCommentId");
-
-                    b.ToTable("Comments");
-                });
-
             modelBuilder.Entity("Twitter.Core.Entities.Topic", b =>
                 {
                     b.Property<int>("Id")
@@ -492,51 +454,16 @@ namespace Twitter.DAL.Migrations
                     b.Navigation("Topic");
                 });
 
-            modelBuilder.Entity("Twitter.Core.Entities.Comment", b =>
-                {
-                    b.HasOne("Twitter.Core.Entities.AppUser", "AppUser")
-                        .WithMany("Comments")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Twitter.Core.Entities.Blog", "Blog")
-                        .WithMany("Comments")
-                        .HasForeignKey("BlogId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Twitter.Core.Entities.Comment", "ParentComment")
-                        .WithMany("ChildComments")
-                        .HasForeignKey("ParentCommentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Blog");
-
-                    b.Navigation("ParentComment");
-                });
-
             modelBuilder.Entity("Twitter.Core.Entities.AppUser", b =>
                 {
                     b.Navigation("Blogs");
-
-                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("Twitter.Core.Entities.Blog", b =>
                 {
                     b.Navigation("BlogTopics");
 
-                    b.Navigation("Comments");
-
                     b.Navigation("Files");
-                });
-
-            modelBuilder.Entity("Twitter.Core.Entities.Comment", b =>
-                {
-                    b.Navigation("ChildComments");
                 });
 
             modelBuilder.Entity("Twitter.Core.Entities.Topic", b =>

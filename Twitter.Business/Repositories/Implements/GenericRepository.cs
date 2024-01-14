@@ -32,12 +32,31 @@ namespace Twitter.Business.Repositories.Implements
 			Table.Remove(data);
 		}
 
-        public IQueryable<T> GetAll(bool notTracked = true)
-            => notTracked ? Table.AsNoTracking() : Table;
+        public IQueryable<T> GetAll(bool notTracked = true, params string[] includes)
+        {
+            var data = Table.AsQueryable().Where(x=> x.IsDeleted == false);
+            if (includes.Any())
+            {
+                foreach (var include in includes)
+                {
+                    data = data.Include(include);
+                }
+            }
+            return notTracked ? data.AsNoTracking() : data;
+        }
 
-		public async Task<T> GetByIdAsync(int id, bool noTracking = true)
+
+        public async Task<T> GetByIdAsync(int id, bool noTracking = true, params string[] includes)
 		{
-			return noTracking ? await Table.AsNoTracking().SingleOrDefaultAsync(t => t.Id == id) : await Table.FindAsync(id);
+            var data = Table.AsQueryable();
+            if (includes.Any())
+            {
+                foreach (var include in includes)
+                {
+                    data = data.Include(include);
+                }
+            }
+            return noTracking ? await data.AsNoTracking().SingleOrDefaultAsync(t => t.Id == id) : await data.SingleOrDefaultAsync(t => t.Id == id);
 		}
 
 		public async Task<bool> IsExistAsync(Expression<Func<T, bool>> expression)

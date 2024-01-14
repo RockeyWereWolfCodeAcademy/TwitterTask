@@ -24,6 +24,7 @@ namespace Twitter.Business
             services.AddScoped<ITopicRepository, TopicRepository>();
 			services.AddScoped<IBlogFileRepository, BlogFileRepository>();
 			services.AddScoped<IBlogRepository, BlogRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
 			return services;
         }
         public static IServiceCollection AddServices (this IServiceCollection services)
@@ -32,6 +33,10 @@ namespace Twitter.Business
 		    services.AddScoped<IBlogFileService, BlogFileService>();
 			services.AddScoped<IBlogService, BlogService>();
 			services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ICommentService, CommentService>();
             return services;
         }
         public static IServiceCollection AddBusinessLayer (this IServiceCollection services)

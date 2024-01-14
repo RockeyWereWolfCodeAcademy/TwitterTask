@@ -11,7 +11,6 @@ namespace Twitter.Business.DTOs.BlogDTOs
 {
 	public class BlogCreateDTO
 	{
-		public string Author { get; set; }
 		public string Content { get; set; }
 		public IEnumerable<int> TopicIds { get; set; }
 	}

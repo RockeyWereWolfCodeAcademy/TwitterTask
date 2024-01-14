@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Twitter.Business.DTOs.BlogDTOs;
 using Twitter.Business.Services.Interfaces;
+using Twitter.Core.Enums;
 
 namespace Twitter.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class BlogsController : ControllerBase
+    [Authorize]
+    public class BlogsController : ControllerBase
 	{
 		readonly IBlogService _service;
 		public BlogsController(IBlogService service)
@@ -33,13 +36,14 @@ namespace Twitter.API.Controllers
 		}
 		[HttpPost]
 		[Route("Create")]
-		public async Task<IActionResult> Create(BlogCreateDTO Blog)
+        public async Task<IActionResult> Create(BlogCreateDTO Blog)
 		{
 			await _service.CreateAsync(Blog);
 			return StatusCode(StatusCodes.Status201Created);
 		}
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> Delete(int id)
+        [Authorize(Roles = nameof(Roles.Admin))]
+        public async Task<IActionResult> Delete(int id)
 		{
 			try
 			{
@@ -51,8 +55,36 @@ namespace Twitter.API.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
+		[HttpPatch("{id}")]
+		public async Task<IActionResult> SoftDelete(int id)
+		{
+			try
+			{
+				await _service.SoftDelete(id);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+		[HttpPatch("reverse/{id}")]
+		[Authorize(Roles = nameof(Roles.Admin))]
+		public async Task<IActionResult> ReverseSoftDelete(int id)
+		{
+			try
+			{
+				await _service.ReverseSoftDelete(id);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Update(int id, BlogUpdateDTO dto)
+        [Authorize(Roles = nameof(Roles.Admin))]
+        public async Task<IActionResult> Update(int id, BlogUpdateDTO dto)
 		{
 			try
 			{

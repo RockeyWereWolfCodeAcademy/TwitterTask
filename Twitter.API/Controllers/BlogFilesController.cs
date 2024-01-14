@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Twitter.Business.DTOs.BlogFileDTOs;
 using Twitter.Business.Services.Interfaces;
+using Twitter.Core.Enums;
 
 namespace Twitter.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class BlogFilesController : ControllerBase
+    public class BlogFilesController : ControllerBase
 	{
 		readonly IBlogFileService _service;
 		public BlogFilesController(IBlogFileService service)
@@ -31,13 +33,15 @@ namespace Twitter.API.Controllers
 			}
 		}
 		[HttpPost]
-		public async Task<IActionResult> Create(BlogFileCreateDTO BlogFile)
+        [Authorize(Roles = nameof(Roles.Admin))]
+        public async Task<IActionResult> Create(BlogFileCreateDTO BlogFile)
 		{
 			await _service.CreateAsync(BlogFile);
 			return StatusCode(StatusCodes.Status201Created);
 		}
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> Delete(int id)
+        [Authorize(Roles = nameof(Roles.Admin))]
+        public async Task<IActionResult> Delete(int id)
 		{
 			try
 			{
@@ -50,7 +54,8 @@ namespace Twitter.API.Controllers
 			}
 		}
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Update(int id, BlogFileUpdateDTO dto)
+        [Authorize(Roles = nameof(Roles.Admin))]
+        public async Task<IActionResult> Update(int id, BlogFileUpdateDTO dto)
 		{
 			try
 			{
